@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
-public class FilmValidatorTest {
+class FilmValidatorTest {
 
     @Test
     void isFilmInfoValid_shouldReturnTrueWhenFieldsAreCorrect() {

@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static ru.yandex.practicum.filmorate.validators.FilmValidator.*;
@@ -15,7 +14,8 @@ import static ru.yandex.practicum.filmorate.validators.FilmValidator.*;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    Map<Long, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
+    private Integer id = 0;
 
     @GetMapping
     public Collection<Film> findAllFilms() {
@@ -42,51 +42,32 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody Film updatedFilm) {
         log.info("Получен запрос на обновление фильма");
-        //пустое поле при парсинге для примитива устанавливается 0,
-        // проверяем это вместо null (id в программе начинаются с 1)
-        if (updatedFilm.getId() == 0) {
+
+        // т.к. валидатор используется в методе создания, он не проверяет id, поэтому дополнительно проверяем:
+        if (updatedFilm.getId() == null) {
             log.warn("Не указан id фильма для обновления");
             throw new ValidationException("Id должен быть указан.");
         }
 
-        Film oldFilm = films.get(updatedFilm.getId());
-        if (oldFilm == null) {
+        if (films.get(updatedFilm.getId()) == null) {
             log.warn("Фильм с id {} не найден", updatedFilm.getId());
             throw new NotFoundException("Фильм с указанным id = " + updatedFilm.getId() + " не найден.");
         }
 
-        if (updatedFilm.getName() != null && !updatedFilm.getName().isEmpty()) {
-            oldFilm.setName(updatedFilm.getName());
-            log.info("Название фильма обновлено на {}", oldFilm.getName());
+        //здесь уже проверяем валидатором
+        try {
+            isFilmInfoValid(updatedFilm);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
         }
 
-        if (updatedFilm.getDescription() != null && !updatedFilm.getDescription().isEmpty() &&
-                updatedFilm.getDescription().length() < MAX_DESCRIPTION_LENGTH) {
-            oldFilm.setDescription(updatedFilm.getDescription());
-            log.info("Описание фильма обновлено на {}", oldFilm.getDescription());
-        }
-
-        if (updatedFilm.getReleaseDate() != null &&
-                !updatedFilm.getReleaseDate().isBefore(THE_BIRTH_OF_CINEMA)) {
-            oldFilm.setReleaseDate(updatedFilm.getReleaseDate());
-            log.info("Дата выхода фильма обновлена на {}", oldFilm.getReleaseDate());
-        }
-
-        if (updatedFilm.getDuration() != null && updatedFilm.getDuration().isPositive()) {
-            oldFilm.setDuration(updatedFilm.getDuration());
-            log.info("Продолжитель фильма обновлена на {}", oldFilm.getDuration());
-        }
-
-        films.put(oldFilm.getId(), oldFilm);
-        log.info("Обновленный фильм {} сохранен", oldFilm);
-        return oldFilm;
+        films.put(updatedFilm.getId(), updatedFilm);
+        log.info("Обновленный фильм {} сохранен", updatedFilm);
+        return updatedFilm;
     }
 
-    private long getNextFilmId() {
-        if (films.isEmpty()) {
-            return 1;
-        }
-        Long currentMaxId = Collections.max(films.keySet());
-        return ++currentMaxId;
+    private Integer getNextFilmId() {
+        return ++id;
     }
 }

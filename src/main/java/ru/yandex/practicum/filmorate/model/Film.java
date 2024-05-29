@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.serialization.DurationDeserializer;
 import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateSerializer;
-
 import java.time.Duration;
 import java.time.LocalDate;
 
@@ -16,7 +15,7 @@ import java.time.LocalDate;
  */
 @Data
 public class Film {
-    private long id;
+    private Integer id;
     private String name;
     private String description;
 
@@ -28,8 +27,8 @@ public class Film {
     @JsonSerialize(using = DurationSerializer.class)
     private Duration duration;
 
-    //конструктор пришлось создать вручную для тестов, иначе десериализация Duration некорректная
-    public Film(long id, String name, String description, LocalDate releaseDate, int duration) {
+    //конструктор нужен для тестов, иначе десериализация Duration некорректная
+    public Film(Integer id, String name, String description, LocalDate releaseDate, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;

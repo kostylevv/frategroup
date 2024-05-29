@@ -13,6 +13,9 @@ public class UserValidator {
         } else if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может быть пустым или содержать пробелы.");
 
+        } else if (user.getBirthday() == null) {
+            throw new ValidationException("Дата рождения не может быть пустой.");
+
         } else if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Некорректная дата рождения.");
         }

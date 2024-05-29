@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 
 
-public class UserValidatorTest {
+class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldReturnTrueWhenFieldsAreCorrect() {

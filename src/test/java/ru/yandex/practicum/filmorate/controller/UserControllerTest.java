@@ -8,10 +8,11 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class UserControllerTest {
-
+class UserControllerTest {
     UserController userController;
 
     @BeforeEach
@@ -25,8 +26,8 @@ public class UserControllerTest {
                 LocalDate.of(1995,4,28));
         User user2 = new User(2,"test2@yandex.ru", "login2", "name2",
                 LocalDate.of(1987,1,6));
-        userController.users.put(user1.getId(), user1);
-        userController.users.put(user2.getId(), user2);
+        userController.createUser(user1);
+        userController.createUser(user2);
 
         Collection<User> allUsers = userController.findAllUsers();
 
@@ -40,8 +41,9 @@ public class UserControllerTest {
 
         userController.createUser(userToCreate);
 
-        User createdUser = userController.users.get(1L);
-        Assertions.assertEquals(1, userController.users.size());
+        List<User> userList = new ArrayList<>(userController.findAllUsers());
+        User createdUser = userList.getFirst();
+        Assertions.assertEquals(1, userList.size());
         Assertions.assertEquals(userToCreate.getName(), createdUser.getName());
     }
 
@@ -52,8 +54,9 @@ public class UserControllerTest {
 
         userController.createUser(user);
 
-        User createdUser = userController.users.get(1L);
-        Assertions.assertEquals(1, userController.users.size());
+        List<User> userList = new ArrayList<>(userController.findAllUsers());
+        User createdUser = userList.getFirst();
+        Assertions.assertEquals(1, userList.size());
         Assertions.assertEquals("login", createdUser.getName());
     }
 
@@ -70,7 +73,7 @@ public class UserControllerTest {
         User createdUser2 = userController.createUser(user2);
         User createdUser3 = userController.createUser(user3);
 
-        Assertions.assertEquals(3, userController.users.size());
+        Assertions.assertEquals(3, userController.findAllUsers().size());
         Assertions.assertEquals(1, createdUser1.getId());
         Assertions.assertEquals(2, createdUser2.getId());
         Assertions.assertEquals(3, createdUser3.getId());
@@ -80,14 +83,15 @@ public class UserControllerTest {
     void updateUser_ShouldUpdateUserWhenAllFieldsAreValid() {
         User user = new User(1,"test@yandex.ru", "login", "name",
                 LocalDate.of(1995,4,28));
-        userController.users.put(1L, user);
+        userController.createUser(user);
         User updatedUser = new User(1,"testUpdated@yandex.ru", "loginUpdated", "nameUpdated",
                 LocalDate.of(1993,1,30));
 
         userController.updateUser(updatedUser);
 
-        User updatedActual = userController.users.get(1L);
-        Assertions.assertEquals(1, userController.users.size());
+        List<User> userList = new ArrayList<>(userController.findAllUsers());
+        User updatedActual = userList.getFirst();
+        Assertions.assertEquals(1, userList.size());
         Assertions.assertEquals("testUpdated@yandex.ru", updatedActual.getEmail());
         Assertions.assertEquals("loginUpdated", updatedActual.getLogin());
         Assertions.assertEquals("nameUpdated", updatedActual.getName());
@@ -95,11 +99,11 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUser_ShouldThrowValidationExceptionWhenIdIs0() {
+    void updateUser_ShouldThrowValidationExceptionWhenIdIsNull() {
         User user = new User(1,"test@yandex.ru", "login", "name",
                 LocalDate.of(1995,4,28));
-        userController.users.put(1L, user);
-        User updatedUser = new User(0,"testUpdated@yandex.ru", "loginUpdated", "nameUpdated",
+        userController.createUser(user);
+        User updatedUser = new User(null,"testUpdated@yandex.ru", "loginUpdated", "nameUpdated",
                 LocalDate.of(1993,1,30));
 
         Assertions.assertThrows(ValidationException.class,() -> userController.updateUser(updatedUser));
@@ -109,7 +113,7 @@ public class UserControllerTest {
     void updateUser_ShouldThrowNotFoundExceptionWhenIdNonExistent() {
         User user = new User(1,"test@yandex.ru", "login", "name",
                 LocalDate.of(1995,4,28));
-        userController.users.put(1L, user);
+        userController.createUser(user);
         User updatedUser = new User(7,"testUpdated@yandex.ru", "loginUpdated", "nameUpdated",
                 LocalDate.of(1993,1,30));
 
@@ -122,8 +126,8 @@ public class UserControllerTest {
                 LocalDate.of(1995,4,28));
         User userToUpdate = new User(2,"testtest@yandex.ru", "login2", "name2",
                 LocalDate.of(2000,2,29));
-        userController.users.put(1L, user);
-        userController.users.put(2L, userToUpdate);
+        userController.createUser(user);
+        userController.createUser(userToUpdate);
         User updatedUser = new User(2,"test@yandex.ru", "loginUpdated", "nameUpdated",
                 LocalDate.of(1993,1,30));
 

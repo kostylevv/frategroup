@@ -6,9 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static ru.yandex.practicum.filmorate.validators.UserValidator.isUserInfoValid;
@@ -17,7 +15,8 @@ import static ru.yandex.practicum.filmorate.validators.UserValidator.isUserInfoV
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    Map<Long, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
+    private Integer id = 0;
 
     @GetMapping
     public Collection<User> findAllUsers() {
@@ -48,61 +47,43 @@ public class UserController {
     @PutMapping
     public User updateUser(@RequestBody User updatedUser) {
         log.info("Получен запрос на обновление пользователя");
-        //пустое поле при парсинге для примитива устанавливается 0,
-        // проверяем это вместо null (id в программе начинаются с 1)
-         if (updatedUser.getId() == 0) {
-             log.warn("Не указан id пользователя для обновления");
+
+        // т.к. валидатор используется в методе создания, он не проверяет id, поэтому дополнительно проверяем:
+        if (updatedUser.getId() == null) {
+            log.warn("Не указан id пользователя для обновления");
             throw new ValidationException("Id должен быть указан.");
         }
 
-        User oldUser = users.get(updatedUser.getId());
-        if (oldUser == null) {
+        if (users.get(updatedUser.getId()) == null) {
             log.warn("Пользователь с id {} не найден", updatedUser.getId());
             throw new NotFoundException("Пользователь с указанным id = " + updatedUser.getId() + " не найден.");
         }
 
-        if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(oldUser.getEmail())) {
-            if (isEmailDuplicated(updatedUser.getEmail())) {
-                log.warn("Email {} уже используется", updatedUser.getEmail());
-                throw new DuplicatedDataException("Этот имейл уже используется");
-            }
-            oldUser.setEmail(updatedUser.getEmail());
-            log.info("Email пользователя обновлен на {}", oldUser.getEmail());
+        //здесь уже проверяем валидатором
+        try {
+            isUserInfoValid(updatedUser);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
         }
 
-        if (updatedUser.getLogin() != null && !updatedUser.getLogin().isEmpty()) {
-            oldUser.setLogin(updatedUser.getLogin());
-            log.info("Логин пользователя обновлен на {}", oldUser.getLogin());
+        if (isEmailDuplicated(updatedUser.getEmail())) {
+            log.warn("Email {} уже используется", updatedUser.getEmail());
+            throw new DuplicatedDataException("Этот имейл уже используется");
         }
 
-        if (updatedUser.getName() != null && !updatedUser.getName().isEmpty()) {
-            oldUser.setName(updatedUser.getName());
-            log.info("Имя пользователя обновлено на {}", oldUser.getName());
-        }
-
-        if (updatedUser.getBirthday() != null &&
-                updatedUser.getBirthday().isBefore(LocalDate.now())) {
-            oldUser.setBirthday(updatedUser.getBirthday());
-            log.info("Дата рождения пользователя обновлена на {}", oldUser.getBirthday());
-        }
-
-        users.put(oldUser.getId(), oldUser);
-        log.info("Обновленный пользователь {} сохранен", oldUser);
-        return oldUser;
+        users.put(updatedUser.getId(), updatedUser);
+        log.info("Обновленный пользователь {} сохранен", updatedUser);
+        return updatedUser;
     }
 
-     private boolean isEmailDuplicated(String newEmail) {
+    private boolean isEmailDuplicated(String newEmail) {
         return users.values().stream()
                 .map(User::getEmail)
                 .anyMatch(email -> email.equals(newEmail));
     }
 
-    private long getNextUserId() {
-        if (users.isEmpty()) {
-            return 1;
-        }
-        Long currentMaxId = Collections.max(users.keySet());
-        return ++currentMaxId;
+    private Integer getNextUserId() {
+        return ++id;
     }
-
 }
