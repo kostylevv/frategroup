@@ -16,10 +16,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private Integer id = 0;
 
+    @Override
     public Collection<Film> getAllFilms() {
         return films.values();
     }
 
+    @Override
     public Film createFilm(Film film) {
         try {
             if (isFilmInfoValid(film)) {
@@ -34,6 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
     public Film updateFilm(Film updatedFilm) {
         if (updatedFilm.getId() == null) {
             log.warn("Не указан id фильма для обновления");

@@ -11,7 +11,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldReturnTrueWhenFieldsAreCorrect() {
-        User user = new User(0,"test@yandex.ru", "login", "name",
+        User user = new User(0,"test@yandex.ru", "login", "name", null,
                 LocalDate.of(1995,4,28));
 
         boolean isUserValid = UserValidator.isUserInfoValid(user);
@@ -21,7 +21,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_emailIsNull() {
-        User user = new User(0,null, "login", "name",
+        User user = new User(0,null, "login", "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -29,7 +29,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_emailIsBlank() {
-        User user = new User(0,"", "login", "name",
+        User user = new User(0,"", "login", "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -37,7 +37,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_emailDoesNotContainAtSymbol() {
-        User user = new User(0,"noAtSignHere", "login", "name",
+        User user = new User(0,"noAtSignHere", "login", "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -45,7 +45,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_loginIsNull() {
-        User user = new User(0,"test@yandex.ru", null, "name",
+        User user = new User(0,"test@yandex.ru", null, "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -53,7 +53,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_loginIsBlank() {
-        User user = new User(0,"test@yandex.ru", "", "name",
+        User user = new User(0,"test@yandex.ru", "", "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -61,7 +61,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_loginContainsSpaces() {
-        User user = new User(0,"test@yandex.ru", "Space here", "name",
+        User user = new User(0,"test@yandex.ru", "Space here", "name", null,
                 LocalDate.of(1995,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));
@@ -69,7 +69,7 @@ class UserValidatorTest {
 
     @Test
     void isUserInfoValid_shouldThrowValidationExceptionWhen_birthdayDateIsAfterToday() {
-        User user = new User(0,"test@yandex.ru", "login", "name",
+        User user = new User(0,"test@yandex.ru", "login", "name", null,
                 LocalDate.of(2030,4,28));
 
         Assertions.assertThrows(ValidationException.class, () -> UserValidator.isUserInfoValid(user));

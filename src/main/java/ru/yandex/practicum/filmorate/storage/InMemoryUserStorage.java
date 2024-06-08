@@ -17,10 +17,12 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private Integer id = 0;
 
+    @Override
     public Collection<User> getAllUsers() {
         return users.values();
     }
 
+    @Override
     public User createUser(User user) {
         try {
             if (isUserInfoValid(user) && !isEmailDuplicated(user.getEmail())) {
@@ -39,6 +41,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User updateUser(User updatedUser) {
         if (updatedUser.getId() == null) {
             log.warn("Не указан id пользователя для обновления");
@@ -65,6 +68,14 @@ public class InMemoryUserStorage implements UserStorage {
         users.put(updatedUser.getId(), updatedUser);
         log.info("Обновленный пользователь {} сохранен", updatedUser);
         return updatedUser;
+    }
+
+    @Override
+    public User findUserById(Integer id) {
+        return users.values().stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", id)));
     }
 
     private boolean isEmailDuplicated(String newEmail) {
