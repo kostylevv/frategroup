@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.util.Collection;
 
-
 @RestController
 @RequestMapping("/films")
 @Slf4j
@@ -50,7 +49,7 @@ public class FilmController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public Film deleteLike(@PathVariable("id") Integer filmId,
-                        @PathVariable Integer userId) {
+                           @PathVariable Integer userId) {
         log.info("Получен запрос на удаление лайка у фильма с id={} от пользователя с id={}", filmId, userId);
         return filmService.deleteLike(filmId, userId);
     }

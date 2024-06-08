@@ -30,9 +30,7 @@ public class Film {
     @JsonSerialize(using = DurationSerializer.class)
     private Duration duration;
 
-    //конструктор нужен для тестов, иначе десериализация Duration некорректная
-    public Film(Integer id, String name, String description,
-                Set<Integer> likes, LocalDate releaseDate, int duration) {
+    public Film(Integer id, String name, String description, Set<Integer> likes, LocalDate releaseDate, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
