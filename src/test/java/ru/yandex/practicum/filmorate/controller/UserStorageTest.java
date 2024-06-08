@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -132,6 +131,6 @@ class UserStorageTest {
         User updatedUser = new User(2,"test@yandex.ru", "loginUpdated", "nameUpdated",
                 null, LocalDate.of(1993,1,30));
 
-        Assertions.assertThrows(DuplicatedDataException.class,() -> userStorage.updateUser(updatedUser));
+        Assertions.assertThrows(ValidationException.class,() -> userStorage.updateUser(updatedUser));
     }
 }

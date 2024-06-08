@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -62,7 +61,7 @@ public class InMemoryUserStorage implements UserStorage {
 
         if (isEmailDuplicated(updatedUser.getEmail())) {
             log.warn("Email {} уже используется", updatedUser.getEmail());
-            throw new DuplicatedDataException("Этот имейл уже используется");
+            throw new ValidationException("Этот имейл уже используется");
         }
 
         users.put(updatedUser.getId(), updatedUser);

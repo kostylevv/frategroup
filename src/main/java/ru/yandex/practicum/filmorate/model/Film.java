@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateSerializer;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Film.
@@ -18,6 +20,7 @@ public class Film {
     private Integer id;
     private String name;
     private String description;
+    private Set<Integer> likes;
 
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -28,12 +31,22 @@ public class Film {
     private Duration duration;
 
     //конструктор нужен для тестов, иначе десериализация Duration некорректная
-    public Film(Integer id, String name, String description, LocalDate releaseDate, int duration) {
+    public Film(Integer id, String name, String description,
+                Set<Integer> likes, LocalDate releaseDate, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.likes = new HashSet<>();
         this.releaseDate = releaseDate;
         this.duration = Duration.ofMinutes(duration);
+    }
+
+    public void addUserIdToFilmLikes(Integer id) {
+        likes.add(id);
+    }
+
+    public void deleteUserIdFromFilmLikes(Integer id) {
+        likes.remove(id);
     }
 }
 
