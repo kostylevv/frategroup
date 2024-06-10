@@ -32,6 +32,11 @@ public class FilmController {
         return filmService.updateFilm(updatedFilm);
     }
 
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable Integer id) {
+        return filmService.findFilmById(id);
+    }
+
     @GetMapping("/popular")
     public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         log.info("Получен запрос на вывод популярных фильмов");

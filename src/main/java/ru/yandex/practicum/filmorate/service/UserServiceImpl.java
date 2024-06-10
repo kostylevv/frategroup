@@ -16,6 +16,11 @@ public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Override
+    public User findUserById(Integer id) {
+        return userStorage.findUserById(id);
+    }
+
+    @Override
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 public interface UserService {
 
+    User findUserById(Integer id);
+
     Collection<User> getAllUsers();
 
     User createUser(User user);

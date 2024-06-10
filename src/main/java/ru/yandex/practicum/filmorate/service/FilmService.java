@@ -5,6 +5,8 @@ import java.util.Collection;
 
 public interface FilmService {
 
+    Film findFilmById(Integer id);
+
     Collection<Film> getAllFilms();
 
     Film createFilm(Film film);

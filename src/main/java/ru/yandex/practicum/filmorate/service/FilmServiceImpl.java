@@ -20,6 +20,11 @@ public class FilmServiceImpl implements FilmService {
     private final UserStorage userStorage;
 
     @Override
+    public Film findFilmById(Integer id) {
+        return filmStorage.findFilmById(id);
+    }
+
+    @Override
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }

@@ -32,6 +32,11 @@ public class UserController {
         return userService.updateUser(updatedUser);
     }
 
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Integer id) {
+        return userService.findUserById(id);
+    }
+
     @GetMapping("/{id}/friends")
     public Collection<User> getUsersFriends(@PathVariable Integer id) {
         log.info("Получен запрос на вывод друзей пользователя с id={}", id);
