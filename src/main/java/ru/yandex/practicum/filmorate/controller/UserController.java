@@ -34,6 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Integer id) {
+        log.info("Получен запрос на вывод пользователя по id={}", id);
         return userService.findUserById(id);
     }
 
