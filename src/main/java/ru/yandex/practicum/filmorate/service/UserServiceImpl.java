@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -12,9 +11,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserStorage userStorage;
+
+    @Override
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    @Override
+    public User createUser(User user) {
+        return userStorage.createUser(user);
+    }
+
+    @Override
+    public User updateUser(User updatedUser) {
+        return userStorage.updateUser(updatedUser);
+    }
 
     @Override
     public Collection<User> getAllFriends(Integer id) {

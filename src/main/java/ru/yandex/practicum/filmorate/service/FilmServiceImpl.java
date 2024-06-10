@@ -20,6 +20,21 @@ public class FilmServiceImpl implements FilmService {
     private final UserStorage userStorage;
 
     @Override
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    @Override
+    public Film createFilm(Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    @Override
+    public Film updateFilm(Film updatedFilm) {
+        return filmStorage.updateFilm(updatedFilm);
+    }
+
+    @Override
     public Collection<Film> getPopularFilms(int count) {
         List<Film> films = filmStorage.getAllFilms().stream()
                 .sorted(Comparator.comparingInt(film -> film.getLikes().size()))

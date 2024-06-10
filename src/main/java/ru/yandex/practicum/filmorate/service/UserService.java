@@ -5,6 +5,12 @@ import java.util.Collection;
 
 public interface UserService {
 
+    Collection<User> getAllUsers();
+
+    User createUser(User user);
+
+    User updateUser(User updatedUser);
+
     Collection<User> getAllFriends(Integer id);
 
     User addFriend(Integer userId, Integer friendId);

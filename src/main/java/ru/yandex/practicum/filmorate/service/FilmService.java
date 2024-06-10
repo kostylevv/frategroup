@@ -5,6 +5,12 @@ import java.util.Collection;
 
 public interface FilmService {
 
+    Collection<Film> getAllFilms();
+
+    Film createFilm(Film film);
+
+    Film updateFilm(Film updatedFilm);
+
     Collection<Film> getPopularFilms(int count);
 
     Film addLike(Integer filmId, Integer userId);
