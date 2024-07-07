@@ -21,14 +21,24 @@ public class Film {
     private String name;
     private String description;
     private Set<Integer> likes;
-
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate releaseDate;
-
     @JsonDeserialize(using = DurationDeserializer.class)
     @JsonSerialize(using = DurationSerializer.class)
     private Duration duration;
+    private Set<Integer> genresId;
+
+    public Film(Integer id, String name, Set<Integer> likes, String description,
+                 Duration duration, LocalDate releaseDate, Set<Integer> genresId) {
+        this.id = id;
+        this.name = name;
+        this.likes = new HashSet<>();
+        this.description = description;
+        this.duration = duration;
+        this.releaseDate = releaseDate;
+        this.genresId = new HashSet<>();
+    }
 
     public Film(Integer id, String name, String description, Set<Integer> likes, LocalDate releaseDate, int duration) {
         this.id = id;
