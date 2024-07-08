@@ -32,6 +32,9 @@ public class User {
         this.birthday = birthday;
     }
 
+    public User() {
+    }
+
     public void addUserIdToFriendsList(Integer id) {
         friends.add(id);
     }

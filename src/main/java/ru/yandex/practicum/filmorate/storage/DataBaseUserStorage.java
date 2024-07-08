@@ -2,24 +2,25 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.List;
 
 @Repository
 @Primary
 public class DataBaseUserStorage extends BaseStorage<User> implements UserStorage {
     private static final String INSERT_QUERY = "INSERT INTO app_user(email, login, name, birthday) VALUES (?, ?, ?, ?)";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM app_user";
 
-    public DataBaseUserStorage(JdbcTemplate jdbc) {
-        super(jdbc);
+    public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
+        super(jdbc, mapper);
     }
 
     @Override
     public Collection<User> getAllUsers() {
-        return List.of();
+        return findMany(FIND_ALL_QUERY);
     }
 
     @Override
