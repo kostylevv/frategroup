@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
+import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserById(Integer id) {
         return userStorage.findUserById(id)
                 .map(UserMapper::mapToUserDto)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + id));
     }
 
     @Override
@@ -43,9 +45,9 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.mapToUser(userRequest);
         try {
             isUserInfoValid(user);
-                if (user.getName() == null) {
-                    user.setName(user.getLogin());
-                }
+            if (user.getName() == null) {
+                user.setName(user.getLogin());
+            }
         } catch (ValidationException e) {
             log.warn("Ошибка валидации: {}", e.getMessage());
             throw new ValidationException(e.getMessage());
@@ -56,9 +58,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User updatedUser) {
-        return userStorage.updateUser(updatedUser);
+    public UserDto updateUser(UpdateUserRequest request) {
+        if (request.getId() == null) {
+            log.warn("Не указан id пользователя для обновления");
+            throw new ValidationException("Id должен быть указан.");
+        }
+
+        Optional<User> userOpt = userStorage.findUserById(request.getId());
+        if (userOpt.isEmpty()) {
+            log.warn("Пользователь с id {} не найден", request.getId());
+            throw new NotFoundException("Пользователь с указанным id = " + request.getId() + " не найден.");
+        }
+
+        User userToUpdate = userOpt.get();
+        User updatedUser = UserMapper.updateUserFields(userToUpdate, request);
+
+        try {
+            isUserInfoValid(updatedUser);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
+        }
+try {
+    updatedUser = userStorage.updateUser(updatedUser);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+        log.info("Обновленный пользователь {} сохранен", updatedUser);
+        return UserMapper.mapToUserDto(updatedUser);
     }
+
 
     @Override
     public Collection<User> getAllFriends(Integer id) {

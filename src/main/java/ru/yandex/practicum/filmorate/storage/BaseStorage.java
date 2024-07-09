@@ -6,7 +6,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import ru.yandex.practicum.filmorate.exceptions.CreateUserException;
+import ru.yandex.practicum.filmorate.exceptions.CreateException;
+import ru.yandex.practicum.filmorate.exceptions.UpdateException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -37,7 +38,7 @@ public class BaseStorage<T> {
         if (id != null) {
             return id;
         } else {
-            throw new CreateUserException("Не удалось сохранить пользователя");
+            throw new CreateException("Не удалось сохранить данные");
         }
     }
 
@@ -51,6 +52,13 @@ public class BaseStorage<T> {
             return Optional.ofNullable(result);
         } catch (EmptyResultDataAccessException ignored) {
             return Optional.empty();
+        }
+    }
+
+    protected void update(String query, Object... params) {
+        int rowsUpdated = jdbc.update(query, params);
+        if (rowsUpdated == 0) {
+            throw new UpdateException("Не удалось обновить данные");
         }
     }
 

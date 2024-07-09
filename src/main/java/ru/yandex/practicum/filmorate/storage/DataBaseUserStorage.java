@@ -15,6 +15,8 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     private static final String INSERT_QUERY = "INSERT INTO app_user(email, login, name, birthday) VALUES (?, ?, ?, ?)";
     private static final String FIND_ALL_QUERY = "SELECT * FROM app_user";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM app_user WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE app_user SET email = ?, login = ?, name = ?, birthday = ?" +
+            " WHERE id = ?";
 
     public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
@@ -38,8 +40,16 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     }
 
     @Override
-    public User updateUser(User updatedUser) {
-        return null;
+    public User updateUser(User user) {
+        update(
+                UPDATE_QUERY,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday(),
+                user.getId()
+        );
+        return user;
     }
 
     @Override
