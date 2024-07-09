@@ -52,7 +52,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film addLike(Integer filmId, Integer userId) {
         Film film = filmStorage.findFilmById(filmId);
-        User user = userStorage.findUserById(userId);
+        User user = userStorage.findUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
         film.addUserIdToFilmLikes(user.getId());
         log.info("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
         return film;
@@ -61,7 +62,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film deleteLike(Integer filmId, Integer userId) {
         Film film = filmStorage.findFilmById(filmId);
-        User user = userStorage.findUserById(userId);
+        User user = userStorage.findUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
 
         if (!film.getLikes().contains(userId)) {
             log.warn("Лайк пользователя с id={} не найден у фильма id={}", userId, filmId);

@@ -7,12 +7,14 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 @Primary
 public class DataBaseUserStorage extends BaseStorage<User> implements UserStorage {
     private static final String INSERT_QUERY = "INSERT INTO app_user(email, login, name, birthday) VALUES (?, ?, ?, ?)";
     private static final String FIND_ALL_QUERY = "SELECT * FROM app_user";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM app_user WHERE id = ?";
 
     public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
@@ -41,7 +43,7 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     }
 
     @Override
-    public User findUserById(Integer id) {
-        return null;
+    public Optional<User> findUserById(Integer id) {
+        return findOne(FIND_BY_ID_QUERY, id);
     }
 }

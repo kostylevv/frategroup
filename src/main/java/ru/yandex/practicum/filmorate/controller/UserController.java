@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.NewUserRequest;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.Collection;
@@ -15,13 +17,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<User> findAllUsers() {
+    public Collection<UserDto> findAllUsers() {
         log.info("Получен запрос на вывод всех пользователей");
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public UserDto createUser(@RequestBody NewUserRequest user) {
         log.info("Получен запрос на создание пользователя");
         return userService.createUser(user);
     }
@@ -33,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id) {
+    public UserDto getUser(@PathVariable Integer id) {
         log.info("Получен запрос на вывод пользователя по id={}", id);
         return userService.findUserById(id);
     }
