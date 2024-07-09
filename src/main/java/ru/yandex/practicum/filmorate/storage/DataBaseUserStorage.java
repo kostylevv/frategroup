@@ -17,6 +17,7 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM app_user WHERE id = ?";
     private static final String UPDATE_QUERY = "UPDATE app_user SET email = ?, login = ?, name = ?, birthday = ?" +
             " WHERE id = ?";
+    private static final String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
 
     public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
@@ -55,5 +56,15 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     @Override
     public Optional<User> findUserById(Integer id) {
         return findOne(FIND_BY_ID_QUERY, id);
+    }
+
+    public Optional<User> addFriend(Integer friendId, Integer userId) {
+        insert(
+                ADD_FRIEND_QUERY,
+                friendId,
+                userId
+
+        );
+        return findUserById(userId);
     }
 }

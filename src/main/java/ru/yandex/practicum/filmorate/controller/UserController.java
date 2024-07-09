@@ -42,13 +42,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> getUsersFriends(@PathVariable Integer id) {
+    public Collection<UserDto> getUsersFriends(@PathVariable Integer id) {
         log.info("Получен запрос на вывод друзей пользователя с id={}", id);
         return userService.getAllFriends(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addToFriends(@PathVariable("id") Integer userId,
+    public UserDto addToFriends(@PathVariable("id") Integer userId,
                              @PathVariable Integer friendId) {
         log.info("Получен запрос на добавление в друзья ползователю id={} от пользователя id={}", userId, friendId);
         return userService.addFriend(userId, friendId);

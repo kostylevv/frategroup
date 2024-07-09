@@ -78,6 +78,12 @@ public class InMemoryUserStorage implements UserStorage {
                 .findFirst();
     }
 
+    // заглушка, для этой реализации не нужен этот метод в слое storage
+    @Override
+    public Optional<User> addFriend(Integer userId, Integer friendId) {
+        return Optional.empty();
+    }
+
     private boolean isEmailDuplicated(String newEmail) {
         return users.values().stream()
                 .map(User::getEmail)

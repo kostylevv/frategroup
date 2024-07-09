@@ -18,17 +18,16 @@ public class User {
     private String email;
     private String login;
     private String name;
-    private Set<Integer> friends;
+    private Set<Integer> friends = new HashSet<>();
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
 
-    public User(Integer id, String email, String login, String name, Set<Integer> friends, LocalDate birthday) {
+    public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
         this.name = name;
-        this.friends = new HashSet<>();
         this.birthday = birthday;
     }
 

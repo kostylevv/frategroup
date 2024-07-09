@@ -16,9 +16,9 @@ public interface UserService {
 
     UserDto updateUser(UpdateUserRequest updatedUser);
 
-    Collection<User> getAllFriends(Integer id);
+    Collection<UserDto> getAllFriends(Integer id);
 
-    User addFriend(Integer userId, Integer friendId);
+    UserDto addFriend(Integer userId, Integer friendId);
 
     User deleteFriend(Integer userId, Integer friendId);
 

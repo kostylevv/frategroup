@@ -12,10 +12,8 @@ import ru.yandex.practicum.filmorate.mappers.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validators.UserValidator.isUserInfoValid;
 
@@ -79,39 +77,40 @@ public class UserServiceImpl implements UserService {
             log.warn(exception.getMessage());
             throw exception;
         }
-try {
-    updatedUser = userStorage.updateUser(updatedUser);
-} catch (Exception e) {
-    e.printStackTrace();
-}
+        updatedUser = userStorage.updateUser(updatedUser);
         log.info("Обновленный пользователь {} сохранен", updatedUser);
         return UserMapper.mapToUserDto(updatedUser);
     }
 
 
     @Override
-    public Collection<User> getAllFriends(Integer id) {
+    public Collection<UserDto> getAllFriends(Integer id) {
         User selectedUser = userStorage.findUserById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + id));
         log.info("Выводится список друзей пользователя id={}", id);
         return selectedUser.getFriends().stream()
                 .map(userStorage::findUserById)
                 .flatMap(Optional::stream)
+                .map(UserMapper::mapToUserDto)
                 .toList();
     }
 
     @Override
-    public User addFriend(Integer userId, Integer friendId) {
+    public UserDto addFriend(Integer userId, Integer friendId) {
+
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
-
         User friend = userStorage.findUserById(friendId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
 
-        user.addUserIdToFriendsList(friendId);
+        userStorage.addFriend(user.getId(), friendId);
+
         friend.addUserIdToFriendsList(userId);
         log.info("Пользователь id={} добавился в друзья к пользователю id={}", userId, friendId);
-        return user;
+        Set<UserDto> friendsSet = friend.getFriends().stream()
+                .map(this::findUserById)
+                .collect(Collectors.toSet());
+        return UserMapper.mapToUserDto(friend, friendsSet);
     }
 
     @Override

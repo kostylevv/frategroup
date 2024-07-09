@@ -14,4 +14,6 @@ public interface UserStorage {
     User updateUser(User updatedUser);
 
     Optional<User> findUserById(Integer id);
+
+    Optional<User> addFriend(Integer userId, Integer friendId);
 }
