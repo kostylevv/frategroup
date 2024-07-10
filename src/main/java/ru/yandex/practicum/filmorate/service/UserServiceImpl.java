@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.UserMapper;
@@ -114,7 +113,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User deleteFriend(Integer userId, Integer friendId) {
+    public UserDto deleteFriend(Integer userId, Integer friendId) {
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
 
@@ -126,29 +125,28 @@ public class UserServiceImpl implements UserService {
 //            log.warn("У пользователя с id={} нет друга с id={}",userId, friendId);
 //            throw new NotFoundException("У пользователя с id=" + userId + " нет друга с id=" + friendId);
 //        }
+        try {
+            userStorage.deleteFriend(userId, friendId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         user.deleteUserIdFromFriendsList(friendId);
         friend.deleteUserIdFromFriendsList(userId);
         log.info("Пользователь id={} удален из друзей пользователя id={}", userId, friendId);
-        return user;
+        return UserMapper.mapToUserDto(user);
     }
 
     @Override
-    public Collection<User> getMutualFriends(Integer userId, Integer otherId) {
+    public Collection<UserDto> getMutualFriends(Integer userId, Integer otherId) {
         User user1 = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
         User user2 = userStorage.findUserById(otherId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + otherId));
 
-        List<User> user1Friends = user1.getFriends().stream()
-                .map(userStorage::findUserById)
-                .flatMap(Optional::stream)
-                .toList();
-        List<User> user2Friends = user2.getFriends().stream()
-                .map(userStorage::findUserById)
-                .flatMap(Optional::stream)
-                .toList();
+        Collection<UserDto> user1Friends = getAllFriends(user1.getId());
+        Collection<UserDto> user2Friends = getAllFriends(user2.getId());
 
-        List<User> mutualFriends = new ArrayList<>(user1Friends);
+        List<UserDto> mutualFriends = new ArrayList<>(user1Friends);
         mutualFriends.retainAll(user2Friends);
         log.info("Выводится список общих друзей полхователей id={} и id={}", userId, otherId);
         return mutualFriends;

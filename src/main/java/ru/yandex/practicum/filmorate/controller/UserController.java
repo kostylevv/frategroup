@@ -55,14 +55,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User deleteFromFriends(@PathVariable("id") Integer userId,
+    public UserDto deleteFromFriends(@PathVariable("id") Integer userId,
                                   @PathVariable Integer friendId) {
         log.info("Получен запрос на удаление из друзей пользователя id={} пользователя id={}", userId, friendId);
         return userService.deleteFriend(userId, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> getMutualFriends(@PathVariable("id") Integer userId,
+    public Collection<UserDto> getMutualFriends(@PathVariable("id") Integer userId,
                                              @PathVariable Integer otherId) {
         log.info("Получен запрос вывод общиех друзей пользователей id={} и id={}", userId, otherId);
         return userService.getMutualFriends(userId, otherId);

@@ -21,6 +21,7 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     private static final String FIND_ALL_FRIENDS_QUERY = "SELECT au.* FROM app_user au JOIN friends f "
             + "ON au.id = f.friend_id WHERE f.user_id = ?";
     private static final String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
+    private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
 
     public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
@@ -78,6 +79,16 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
                 userId
 
         );
+        return findUserById(userId);
+    }
+
+    @Override
+    public Optional<User> deleteFriend(Integer userId, Integer friendId) {
+         delete(
+                 DELETE_FRIEND_QUERY,
+                userId,
+                friendId
+         );
         return findUserById(userId);
     }
 

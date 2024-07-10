@@ -20,7 +20,7 @@ public interface UserService {
 
     UserDto addFriend(Integer userId, Integer friendId);
 
-    User deleteFriend(Integer userId, Integer friendId);
+    UserDto deleteFriend(Integer userId, Integer friendId);
 
-    Collection<User> getMutualFriends(Integer userId, Integer otherId);
+    Collection<UserDto> getMutualFriends(Integer userId, Integer otherId);
 }

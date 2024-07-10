@@ -61,4 +61,8 @@ public class BaseStorage<T> {
         }
     }
 
+    protected void delete(String query, Object... params) {
+        jdbc.update(query, params);
+    }
+
 }

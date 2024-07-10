@@ -18,4 +18,6 @@ public interface UserStorage {
     Collection<User> getAllFriends(Integer id);
 
     Optional<User> addFriend(Integer userId, Integer friendId);
+
+    Optional<User> deleteFriend(Integer userId, Integer friendId);
 }

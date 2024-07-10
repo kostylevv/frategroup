@@ -88,6 +88,12 @@ public class InMemoryUserStorage implements UserStorage {
         return Optional.empty();
     }
 
+    // заглушка, для этой реализации не нужен этот метод в слое storage
+    @Override
+    public Optional<User> deleteFriend(Integer userId, Integer friendId) {
+        return Optional.empty();
+    }
+
     private boolean isEmailDuplicated(String newEmail) {
         return users.values().stream()
                 .map(User::getEmail)
