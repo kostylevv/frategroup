@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.UserMapper;
@@ -88,11 +89,10 @@ public class UserServiceImpl implements UserService {
         User selectedUser = userStorage.findUserById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + id));
         log.info("Выводится список друзей пользователя id={}", id);
-        return selectedUser.getFriends().stream()
-                .map(userStorage::findUserById)
-                .flatMap(Optional::stream)
+        Collection<User> friends = userStorage.getAllFriends(selectedUser.getId());
+        return friends.stream()
                 .map(UserMapper::mapToUserDto)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Override

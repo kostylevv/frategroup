@@ -5,10 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 import static ru.yandex.practicum.filmorate.validators.UserValidator.isUserInfoValid;
 
@@ -76,6 +74,12 @@ public class InMemoryUserStorage implements UserStorage {
         return users.values().stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst();
+    }
+
+    // заглушка, для этой реализации не нужен этот метод в слое storage
+    @Override
+    public Collection<User> getAllFriends(Integer id) {
+        return List.of();
     }
 
     // заглушка, для этой реализации не нужен этот метод в слое storage

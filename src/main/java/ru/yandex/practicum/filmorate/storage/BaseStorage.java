@@ -32,7 +32,6 @@ public class BaseStorage<T> {
             return ps;
         }, keyHolder);
 
-
         Integer id = keyHolder.getKeyAs(Integer.class);
 
         if (id != null) {

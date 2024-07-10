@@ -37,14 +37,8 @@ CREATE TABLE IF NOT EXISTS film_genres (
     genre_id INTEGER REFERENCES genre(id)
 );
 
-CREATE TABLE IF NOT EXISTS status (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) UNIQUE
-);
-
 CREATE TABLE IF NOT EXISTS friends (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER REFERENCES app_user(id),
-    friend_id INTEGER REFERENCES app_user(id),
-    status_id INTEGER REFERENCES status(id)
+    friend_id INTEGER REFERENCES app_user(id)
 );

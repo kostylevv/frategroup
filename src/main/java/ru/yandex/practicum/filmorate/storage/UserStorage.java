@@ -15,5 +15,7 @@ public interface UserStorage {
 
     Optional<User> findUserById(Integer id);
 
+    Collection<User> getAllFriends(Integer id);
+
     Optional<User> addFriend(Integer userId, Integer friendId);
 }
