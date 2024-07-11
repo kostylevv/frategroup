@@ -15,12 +15,21 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public class BaseStorage<T> {
     protected final JdbcTemplate jdbc;
     protected final RowMapper<T> mapper;
-    protected final ResultSetExtractor<List<T>> extractor;
+    protected ResultSetExtractor<List<T>> extractor;
 
+    public BaseStorage(JdbcTemplate jdbc, RowMapper<T> mapper, ResultSetExtractor<List<T>> extractor) {
+        this.jdbc = jdbc;
+        this.mapper = mapper;
+        this.extractor = extractor;
+    }
+
+    public BaseStorage(JdbcTemplate jdbc, RowMapper<T> mapper) {
+        this.jdbc = jdbc;
+        this.mapper = mapper;
+    }
 
     protected Integer insert(String query, Object... params) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -45,6 +54,10 @@ public class BaseStorage<T> {
 
     protected List<T> findMany(String query, Object... params) {
         return jdbc.query(query, extractor, params);
+    }
+
+    protected List<T> findManyNoExtractor(String query, Object... params) {
+        return jdbc.query(query, mapper, params);
     }
 
     protected Optional<T> findOne(String query, Object... params) {
