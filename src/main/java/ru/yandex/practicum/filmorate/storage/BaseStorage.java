@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.exceptions.CreateException;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class BaseStorage<T> {
     protected final JdbcTemplate jdbc;
     protected final RowMapper<T> mapper;
+    protected final ResultSetExtractor<List<T>> extractor;
 
 
     protected Integer insert(String query, Object... params) {
@@ -42,7 +44,7 @@ public class BaseStorage<T> {
     }
 
     protected List<T> findMany(String query, Object... params) {
-        return jdbc.query(query, mapper, params);
+        return jdbc.query(query, extractor, params);
     }
 
     protected Optional<T> findOne(String query, Object... params) {

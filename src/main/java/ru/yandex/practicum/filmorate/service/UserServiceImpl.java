@@ -88,8 +88,7 @@ public class UserServiceImpl implements UserService {
         User selectedUser = userStorage.findUserById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + id));
         log.info("Выводится список друзей пользователя id={}", id);
-        Collection<User> friends = userStorage.getAllFriends(selectedUser.getId());
-        return friends.stream()
+        return userStorage.getAllFriends(selectedUser.getId()).stream()
                 .map(UserMapper::mapToUserDto)
                 .collect(Collectors.toSet());
     }
@@ -104,12 +103,9 @@ public class UserServiceImpl implements UserService {
 
         userStorage.addFriend(user.getId(), friendId);
 
-        friend.addUserIdToFriendsList(userId);
+        user.addUserIdToFriendsList(friendId);
         log.info("Пользователь id={} добавился в друзья к пользователю id={}", userId, friendId);
-        Set<UserDto> friendsSet = friend.getFriends().stream()
-                .map(this::findUserById)
-                .collect(Collectors.toSet());
-        return UserMapper.mapToUserDto(friend, friendsSet);
+        return UserMapper.mapToUserDto(user);
     }
 
     @Override
@@ -125,11 +121,7 @@ public class UserServiceImpl implements UserService {
 //            log.warn("У пользователя с id={} нет друга с id={}",userId, friendId);
 //            throw new NotFoundException("У пользователя с id=" + userId + " нет друга с id=" + friendId);
 //        }
-        try {
-            userStorage.deleteFriend(userId, friendId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        userStorage.deleteFriend(userId, friendId);
         user.deleteUserIdFromFriendsList(friendId);
         friend.deleteUserIdFromFriendsList(userId);
         log.info("Пользователь id={} удален из друзей пользователя id={}", userId, friendId);

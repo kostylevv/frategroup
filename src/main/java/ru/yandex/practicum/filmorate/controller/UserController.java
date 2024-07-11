@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.Collection;
 
@@ -64,7 +63,7 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<UserDto> getMutualFriends(@PathVariable("id") Integer userId,
                                              @PathVariable Integer otherId) {
-        log.info("Получен запрос вывод общиех друзей пользователей id={} и id={}", userId, otherId);
+        log.info("Получен запрос вывод общих друзей пользователей id={} и id={}", userId, otherId);
         return userService.getMutualFriends(userId, otherId);
     }
 }

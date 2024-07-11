@@ -13,6 +13,6 @@ public class UserDto {
     private String email;
     private String login;
     private String name;
-    private Set<UserDto> friends;
+    private Set<Integer> friends;
     private LocalDate birthday;
 }
