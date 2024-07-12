@@ -9,7 +9,7 @@ public interface FilmService {
 
     FilmDto findFilmById(Integer id);
 
-    Collection<Film> getAllFilms();
+    Collection<FilmDto> getAllFilms();
 
     FilmDto createFilm(NewFilmRequest request);
 

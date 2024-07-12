@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,18 +18,28 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
             "mpa_id) VALUES (?, ?, ?, ?, ?)";
     private static final String INSERT_FILM_GENRES_QUERY = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
     private static final String FIND_FILM_BY_ID =
-            "SELECT " +
-            "    f.*, " +
-            "    m.name AS mpa_name, " +
-            "    fg.genre_id AS genres_id, " +
-            "    g.name AS genre_name, " +
-            "    fl.user_id AS likes_id " +
-            "FROM film f " +
-            "LEFT JOIN mpa m ON f.mpa_id = m.id " +
-            "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
-            "LEFT JOIN genre g ON fg.genre_id = g.id " +
-            "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
-            "WHERE f.id = ?;";
+            "SELECT f.*, " +
+                    "m.name AS mpa_name, " +
+                    "fg.genre_id AS genres_id, " +
+                    "g.name AS genre_name, " +
+                    "fl.user_id AS likes_id " +
+                    "FROM film f " +
+                    "LEFT JOIN mpa m ON f.mpa_id = m.id " +
+                    "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
+                    "LEFT JOIN genre g ON fg.genre_id = g.id " +
+                    "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
+                    "WHERE f.id = ?;";
+    private static final String FIND_ALL_QUERY =
+            "SELECT  f.*, " +
+                    "m.name AS mpa_name, " +
+                    "fg.genre_id AS genres_id, " +
+                    "g.name AS genre_name, " +
+                    "fl.user_id AS likes_id " +
+                    "FROM film f " +
+                    "LEFT JOIN mpa m ON f.mpa_id = m.id " +
+                    "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
+                    "LEFT JOIN genre g ON fg.genre_id = g.id " +
+                    "LEFT JOIN film_likes fl ON f.id = fl.film_id";
 
     public DataBaseFilmStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -38,7 +47,7 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
 
     @Override
     public Collection<Film> getAllFilms() {
-        return List.of();
+        return findManyNoExtractor(FIND_ALL_QUERY);
     }
 
     @Override
