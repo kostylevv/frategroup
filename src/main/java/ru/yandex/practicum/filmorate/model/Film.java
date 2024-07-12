@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.serialization.DurationDeserializer;
 import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
-import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
-import ru.yandex.practicum.filmorate.serialization.LocalDateSerializer;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -21,32 +19,35 @@ public class Film {
     private String name;
     private String description;
     private Set<Integer> likes;
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    private LocalDate releaseDate;
-    @JsonDeserialize(using = DurationDeserializer.class)
-    @JsonSerialize(using = DurationSerializer.class)
-    private Duration duration;
-    private Set<Integer> genresId;
 
-    public Film(Integer id, String name, Set<Integer> likes, String description,
-                 Duration duration, LocalDate releaseDate, Set<Integer> genresId) {
+    private LocalDate releaseDate;
+
+    private Duration duration;
+    private Set<Genre> genres;
+    private Mpa mpa;
+
+    public Film(Integer id, String name, String description,
+                 Duration duration, LocalDate releaseDate, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.likes = new HashSet<>();
         this.description = description;
         this.duration = duration;
         this.releaseDate = releaseDate;
-        this.genresId = new HashSet<>();
+        this.genres = genres;
     }
 
-    public Film(Integer id, String name, String description, Set<Integer> likes, LocalDate releaseDate, int duration) {
+    public Film(Integer id, String name, String description, LocalDate releaseDate, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.likes = new HashSet<>();
         this.releaseDate = releaseDate;
         this.duration = Duration.ofMinutes(duration);
+    }
+
+    public Film() {
+
     }
 
     public void addUserIdToFilmLikes(Integer id) {

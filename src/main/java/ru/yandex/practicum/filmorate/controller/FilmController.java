@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import java.util.Collection;
@@ -21,9 +23,9 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@RequestBody Film film) {
+    public FilmDto createFilm(@RequestBody NewFilmRequest request) {
         log.info("Получен запрос на создание фильма");
-        return filmService.createFilm(film);
+        return filmService.createFilm(request);
     }
 
     @PutMapping
