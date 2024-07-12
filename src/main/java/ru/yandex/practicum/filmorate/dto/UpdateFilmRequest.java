@@ -3,13 +3,10 @@ package ru.yandex.practicum.filmorate.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 public class UpdateFilmRequest {
@@ -20,8 +17,6 @@ public class UpdateFilmRequest {
     private LocalDate releaseDate;
     @JsonSerialize(using = DurationSerializer.class)
     Duration duration;
-    private Set<Genre> genresId;
-    private Mpa mpa;
 
     public boolean hasName() {
         return ! (name == null || name.isBlank());
@@ -37,13 +32,5 @@ public class UpdateFilmRequest {
 
     public boolean hasDuration() {
         return duration != null;
-    }
-
-    public boolean hasGenres() {
-        return genresId != null && !genresId.isEmpty();
-    }
-
-    public boolean hasMpa() {
-        return mpa != null;
     }
 }

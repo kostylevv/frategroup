@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
+import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.FilmMapper;
@@ -63,8 +64,9 @@ public class FilmServiceImpl implements FilmService {
                 .map(Genre::getId)
                 .map(genreStorage::findGenreById)
                 .flatMap(Optional::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparingInt(Genre::getId))));
         filmDto.setGenres(genres);
+
 
         Integer mpaId = film.getMpa().getId();
         Mpa mpa = mpaStorage.findMpaById(mpaId)
@@ -76,8 +78,30 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film updateFilm(Film updatedFilm) {
-        return filmStorage.updateFilm(updatedFilm);
+    public FilmDto updateFilm(UpdateFilmRequest request) {
+        if (request.getId() == null) {
+            log.warn("Не указан id фильма для обновления");
+            throw new ValidationException("Id фильма для обновления должен быть указан.");
+        }
+
+        Optional<Film> filmOpt = filmStorage.findFilmById(request.getId());
+        if (filmOpt.isEmpty()) {
+            log.warn("Фильм с id {} не найден", request.getId());
+            throw new NotFoundException("Фильм с указанным id = " + request.getId() + " не найден.");
+        }
+
+        Film filmToUpdate = filmOpt.get();
+        Film updatedFilm = FilmMapper.updateFilmFields(filmToUpdate, request);
+
+        try {
+            isFilmInfoValid(updatedFilm);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
+        }
+        updatedFilm = filmStorage.updateFilm(updatedFilm);
+        log.info("Обновленный фильм {} сохранен", updatedFilm);
+        return FilmMapper.mapToFilmDto(updatedFilm);
     }
 
     @Override

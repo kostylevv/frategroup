@@ -47,12 +47,6 @@ public final class FilmMapper {
         if (request.hasDuration()) {
             film.setDuration(request.getDuration());
         }
-        if (request.hasGenres()) {
-            film.setGenres(request.getGenresId());
-        }
-        if (request.hasMpa()) {
-            film.setMpa(request.getMpa());
-        }
         return film;
     }
 }

@@ -14,10 +14,10 @@ import java.util.Optional;
 @Primary
 public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorage {
 
-    private static final String INSERT_FILM_QUERY = "INSERT INTO film (name, description, release_date, duration, " +
+    private static final String INSERT_QUERY = "INSERT INTO film (name, description, release_date, duration, " +
             "mpa_id) VALUES (?, ?, ?, ?, ?)";
     private static final String INSERT_FILM_GENRES_QUERY = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-    private static final String FIND_FILM_BY_ID =
+    private static final String FIND_BY_ID_QUERY =
             "SELECT f.*, " +
                     "m.name AS mpa_name, " +
                     "fg.genre_id AS genres_id, " +
@@ -40,6 +40,8 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
                     "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
                     "LEFT JOIN genre g ON fg.genre_id = g.id " +
                     "LEFT JOIN film_likes fl ON f.id = fl.film_id";
+    private static final String UPDATE_QUERY = "UPDATE film SET name = ?, description = ?, release_date = ?, " +
+            "duration = ? WHERE id = ?";
 
     public DataBaseFilmStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -52,13 +54,13 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
 
     @Override
     public Optional<Film> findFilmById(Integer id) {
-        return findOne(FIND_FILM_BY_ID, id);
+        return findOne(FIND_BY_ID_QUERY, id);
     }
 
     @Override
     public Film createFilm(Film film) {
         Integer id = insert(
-                INSERT_FILM_QUERY,
+                INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -75,7 +77,15 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
 
     @Override
     public Film updateFilm(Film updatedFilm) {
-        return null;
+        update(
+                UPDATE_QUERY,
+                updatedFilm.getName(),
+                updatedFilm.getDescription(),
+                updatedFilm.getReleaseDate(),
+                updatedFilm.getDuration(),
+                updatedFilm.getId()
+        );
+        return updatedFilm;
     }
 
 

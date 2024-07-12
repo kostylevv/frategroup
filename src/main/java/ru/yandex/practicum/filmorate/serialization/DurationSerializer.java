@@ -11,6 +11,11 @@ public class DurationSerializer extends JsonSerializer<Duration> {
     @Override
     public void serialize(Duration duration, JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeNumber(duration.toMinutes());
+        long seconds = duration.getSeconds();
+        if (duration.toMinutes() < 5) {
+            jsonGenerator.writeNumber(seconds);
+        } else {
+            jsonGenerator.writeNumber(duration.toMinutes());
+        }
     }
 }
