@@ -43,6 +43,7 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
     private static final String UPDATE_QUERY = "UPDATE film SET name = ?, description = ?, release_date = ?, " +
             "duration = ? WHERE id = ?";
     private static final String ADD_LIKE_QUERY = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
+    private static final String DELETE_LIKE_QUERY = "DELETE FROM film_likes WHERE film_id = ? AND user_id = ?";
 
     public DataBaseFilmStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -98,5 +99,10 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
         return film;
     }
 
-
+    @Override
+    public Film deleteLike(Film film, Integer userId) {
+        delete(DELETE_LIKE_QUERY, film.getId(), userId);
+        film.deleteUserIdFromFilmLikes(userId);
+        return film;
+    }
 }

@@ -69,6 +69,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
+    public Film deleteLike(Film film, Integer userId) {
+        film.deleteUserIdFromFilmLikes(userId);
+        return film;
+    }
+
     private Integer getNextFilmId() {
         return ++id;
     }

@@ -127,7 +127,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film deleteLike(Integer filmId, Integer userId) {
+    public FilmDto deleteLike(Integer filmId, Integer userId) {
         Film film = filmStorage.findFilmById(filmId)
                 .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
         User user = userStorage.findUserById(userId)
@@ -137,9 +137,8 @@ public class FilmServiceImpl implements FilmService {
             log.warn("Лайк пользователя с id={} не найден у фильма id={}", userId, filmId);
             throw new NotFoundException("Лайк пользователя с id=" + userId + " не найден у фильма id=" + filmId);
         }
-
-        film.deleteUserIdFromFilmLikes(user.getId());
-        log.info("Пользователь id={} убрал лайк с фильма id={}", userId, filmId);
-        return film;
+        filmStorage.deleteLike(film, userId);
+        log.info("Пользователь id={} убрал лайк с фильма id={}", user.getId(), filmId);
+        return FilmMapper.mapToFilmDto(film);
     }
 }
