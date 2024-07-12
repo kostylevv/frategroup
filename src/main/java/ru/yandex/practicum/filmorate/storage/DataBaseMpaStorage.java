@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class DataBaseMpaStorage extends BaseStorage<Mpa> implements MpaStorage {
-    private static final String FIND_ALL_QUERY = "SELECT * FROM mpa";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM mpa ORDER BY id";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM mpa WHERE id = ?";
 
 

@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.service.GenreService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/genres")
 @Slf4j
 @RequiredArgsConstructor
 public class GenreController {
