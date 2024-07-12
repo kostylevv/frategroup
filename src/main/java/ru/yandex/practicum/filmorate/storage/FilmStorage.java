@@ -14,4 +14,6 @@ public interface FilmStorage {
     Film updateFilm(Film updatedFilm);
 
     Optional<Film> findFilmById(Integer id);
+
+    Film addLike(Film film, Integer userId);
 }

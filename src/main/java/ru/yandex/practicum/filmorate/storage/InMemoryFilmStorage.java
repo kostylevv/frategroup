@@ -63,6 +63,12 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .findFirst();
     }
 
+    @Override
+    public Film addLike(Film film, Integer userId) {
+        film.addUserIdToFilmLikes(userId);
+        return film;
+    }
+
     private Integer getNextFilmId() {
         return ++id;
     }

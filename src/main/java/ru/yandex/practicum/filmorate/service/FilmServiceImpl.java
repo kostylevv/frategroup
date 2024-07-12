@@ -115,14 +115,15 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film addLike(Integer filmId, Integer userId) {
+    public FilmDto addLike(Integer filmId, Integer userId) {
         Film film = filmStorage.findFilmById(filmId)
                 .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
-        film.addUserIdToFilmLikes(user.getId());
+
+        filmStorage.addLike(film, user.getId());
         log.info("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
-        return film;
+        return FilmMapper.mapToFilmDto(film);
     }
 
     @Override

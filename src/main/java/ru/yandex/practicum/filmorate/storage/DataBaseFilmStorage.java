@@ -42,6 +42,7 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
                     "LEFT JOIN film_likes fl ON f.id = fl.film_id";
     private static final String UPDATE_QUERY = "UPDATE film SET name = ?, description = ?, release_date = ?, " +
             "duration = ? WHERE id = ?";
+    private static final String ADD_LIKE_QUERY = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
 
     public DataBaseFilmStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -56,6 +57,8 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
     public Optional<Film> findFilmById(Integer id) {
         return findOne(FIND_BY_ID_QUERY, id);
     }
+
+
 
     @Override
     public Film createFilm(Film film) {
@@ -86,6 +89,13 @@ public class DataBaseFilmStorage extends BaseStorage<Film> implements FilmStorag
                 updatedFilm.getId()
         );
         return updatedFilm;
+    }
+
+    @Override
+    public Film addLike(Film film, Integer userId) {
+        insert(ADD_LIKE_QUERY, film.getId(), userId);
+        film.addUserIdToFilmLikes(userId);
+        return film;
     }
 
 
