@@ -1,10 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.serialization.DurationDeserializer;
-import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -19,9 +15,7 @@ public class Film {
     private String name;
     private String description;
     private Set<Integer> likes;
-
     private LocalDate releaseDate;
-
     private Duration duration;
     private Set<Genre> genres;
     private Mpa mpa;

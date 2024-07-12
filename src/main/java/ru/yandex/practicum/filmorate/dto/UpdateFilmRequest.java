@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;

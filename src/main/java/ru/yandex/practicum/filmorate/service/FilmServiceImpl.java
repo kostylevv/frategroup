@@ -20,7 +20,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 import static ru.yandex.practicum.filmorate.validators.FilmValidator.isFilmInfoValid;
 
 @Service
@@ -33,8 +32,10 @@ public class FilmServiceImpl implements FilmService {
     private final GenreStorage genreStorage;
 
     @Override
-    public Film findFilmById(Integer id) {
-        return filmStorage.findFilmById(id);
+    public FilmDto findFilmById(Integer id) {
+        Film film = filmStorage.findFilmById(id)
+                .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
+        return FilmMapper.mapToFilmDto(film);
     }
 
     @Override
@@ -89,7 +90,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film addLike(Integer filmId, Integer userId) {
-        Film film = filmStorage.findFilmById(filmId);
+        Film film = filmStorage.findFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
         film.addUserIdToFilmLikes(user.getId());
@@ -99,7 +101,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film deleteLike(Integer filmId, Integer userId) {
-        Film film = filmStorage.findFilmById(filmId);
+        Film film = filmStorage.findFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
 

@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.serialization.DurationDeserializer;
-import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
-import ru.yandex.practicum.filmorate.serialization.LocalDateSerializer;
 
 import java.time.Duration;
 import java.time.LocalDate;

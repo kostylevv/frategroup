@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface FilmService {
 
-    Film findFilmById(Integer id);
+    FilmDto findFilmById(Integer id);
 
     Collection<Film> getAllFilms();
 

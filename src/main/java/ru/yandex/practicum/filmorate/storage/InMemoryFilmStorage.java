@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static ru.yandex.practicum.filmorate.validators.FilmValidator.isFilmInfoValid;
 
@@ -56,11 +57,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(Integer id) {
+    public Optional<Film> findFilmById(Integer id) {
         return films.values().stream()
                 .filter(film -> film.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(String.format("Фильм с id = %d не найден", id)));
+                .findFirst();
     }
 
     private Integer getNextFilmId() {

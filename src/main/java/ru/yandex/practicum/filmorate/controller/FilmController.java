@@ -35,7 +35,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable Integer id) {
+    public FilmDto getFilm(@PathVariable Integer id) {
         log.info("Получен запрос на вывод фильма по id={}", id);
         return filmService.findFilmById(id);
     }
