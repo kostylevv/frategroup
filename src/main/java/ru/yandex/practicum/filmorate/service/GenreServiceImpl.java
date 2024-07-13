@@ -16,7 +16,6 @@ import java.util.Collection;
 public class GenreServiceImpl implements GenreService {
     private final GenreStorage genreStorage;
 
-
     @Override
     public Collection<GenreDto> getAllGenres() {
         return genreStorage.getAllGenres().stream()

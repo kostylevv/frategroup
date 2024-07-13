@@ -76,19 +76,16 @@ public class InMemoryUserStorage implements UserStorage {
                 .findFirst();
     }
 
-    // заглушка, для этой реализации не нужен этот метод в слое storage
     @Override
     public Collection<User> getAllFriends(Integer id) {
         return List.of();
     }
 
-    // заглушка, для этой реализации не нужен этот метод в слое storage
     @Override
     public Optional<User> addFriend(Integer userId, Integer friendId) {
         return Optional.empty();
     }
 
-    // заглушка, для этой реализации не нужен этот метод в слое storage
     @Override
     public Optional<User> deleteFriend(Integer userId, Integer friendId) {
         return Optional.empty();

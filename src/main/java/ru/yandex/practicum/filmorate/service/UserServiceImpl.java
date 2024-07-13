@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         User friend = userStorage.findUserById(friendId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
 
-        userStorage.addFriend(user.getId(), friendId);
+        userStorage.addFriend(user.getId(), friend.getId());
 
         user.addUserIdToFriendsList(friendId);
         log.info("Пользователь id={} добавился в друзья к пользователю id={}", userId, friendId);
@@ -117,10 +117,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId));
 
 //      Здесь я хотел выбросить исключение, если пользователи не в друзьях, но тесты постман ожидают код 200))
-//        if (!user.getFriends().contains(friendId)) {
-//            log.warn("У пользователя с id={} нет друга с id={}",userId, friendId);
-//            throw new NotFoundException("У пользователя с id=" + userId + " нет друга с id=" + friendId);
-//        }
         userStorage.deleteFriend(userId, friendId);
         user.deleteUserIdFromFriendsList(friendId);
         friend.deleteUserIdFromFriendsList(userId);

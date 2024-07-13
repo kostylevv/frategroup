@@ -5,6 +5,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
 public class FilmValidator {
+
+    private FilmValidator() {
+    }
+
     public static final int MAX_DESCRIPTION_LENGTH = 200;
     public static final LocalDate THE_BIRTH_OF_CINEMA = LocalDate.of(1895, 12, 28);
 

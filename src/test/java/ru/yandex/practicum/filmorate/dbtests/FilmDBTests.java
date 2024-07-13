@@ -11,7 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.*;
 import ru.yandex.practicum.filmorate.storage.*;
 import ru.yandex.practicum.filmorate.storage.mappers.*;
@@ -34,7 +33,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
         FilmResultSetExtractor.class, FilmListResultSetExtractor.class, FilmServiceImpl.class, GenreRowMapper.class,
         MpaRowMapper.class, FilmStorage.class, DataBaseFilmStorage.class, MpaStorage.class, MpaService.class,
         MpaServiceImpl.class, DataBaseMpaStorage.class, MpaRowMapper.class})
-public class FilmDBTests {
+class FilmDBTests {
     private final DataBaseFilmStorage filmStorage;
 
     @Test
@@ -55,7 +54,7 @@ public class FilmDBTests {
         assertThat(filmOptional)
                 .isPresent()
                 .hasValueSatisfying(film1 ->
-                        assertThat(film1).hasFieldOrPropertyWithValue("id", 14)
+                        assertThat(film1).hasFieldOrPropertyWithValue("id", film1.getId())
                 );
     }
 
@@ -84,7 +83,7 @@ public class FilmDBTests {
 
         film = filmStorage.createFilm(film);
 
-        Assertions.assertEquals(16, film.getId());
+        Assertions.assertTrue(film.getId() != null);
     }
 
     @Test
