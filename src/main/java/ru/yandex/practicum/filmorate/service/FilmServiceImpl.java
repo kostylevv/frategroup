@@ -49,29 +49,45 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmDto createFilm(NewFilmRequest request) {
         Film film = FilmMapper.mapTofilm(request);
-
+        // валидация
         try {
             isFilmInfoValid(film);
         } catch (ValidationException e) {
             log.warn("Ошибка валидации: {}", e.getMessage());
             throw new ValidationException(e.getMessage());
         }
-
-        film = filmStorage.createFilm(film);
-        FilmDto filmDto = FilmMapper.mapToFilmDto(film);
-
-        Set<Genre> genres = film.getGenres().stream()
-                .map(Genre::getId)
-                .map(genreStorage::findGenreById)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparingInt(Genre::getId))));
-        filmDto.setGenres(genres);
-
-
         Integer mpaId = film.getMpa().getId();
         Mpa mpa = mpaStorage.findMpaById(mpaId)
-                .orElseThrow(() -> new NotFoundException("Не найден рейтинг с ID:" + mpaId));
+                .orElseThrow(() -> new ValidationException("Не существует рейтинга с ID:" + mpaId));
+
+        if (request.getGenres() != null) {
+            List<Integer> genreIds = film.getGenres().stream()
+                    .map(Genre::getId)
+                    .toList();
+            for (Integer id : genreIds) {
+                genreStorage.findGenreById(id)
+                        .orElseThrow(() -> new ValidationException("Не существует жанра с ID:" + id));
+            }
+        } else {
+            film.setGenres(new HashSet<>());
+        }
+        film = filmStorage.createFilm(film);
+
+        // маппинг
+        FilmDto filmDto = FilmMapper.mapToFilmDto(film);
+
         filmDto.setMpa(mpa);
+
+        if (request.getGenres() != null && !request.getGenres().isEmpty()) {
+            Set<Genre> genres = film.getGenres().stream()
+                    .map(Genre::getId)
+                    .map(genreStorage::findGenreById)
+                    .flatMap(Optional::stream)
+                    .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparingInt(Genre::getId))));
+            filmDto.setGenres(genres);
+        } else {
+            filmDto.setGenres(new HashSet<>());
+        }
 
         log.info("Фильм создан: {}", filmDto);
         return filmDto;
@@ -105,13 +121,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Collection<Film> getPopularFilms(int count) {
-        List<Film> films = filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> film.getLikes().size()))
-                .limit(count)
-                .toList();
+    public Collection<FilmDto> getPopularFilms(int count) {
         log.info("Выводится список популярных фильмов");
-        return films.reversed();
+        return filmStorage.getPopularFilms(count).stream()
+                .map(FilmMapper::mapToFilmDto)
+                .toList();
     }
 
     @Override
@@ -120,10 +134,11 @@ public class FilmServiceImpl implements FilmService {
                 .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
         User user = userStorage.findUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Не найден пользователь с ID: " + userId));
-
         filmStorage.addLike(film, user.getId());
-        log.info("Пользователь id={} поставил лайк фильму id={}", userId, filmId);
-        return FilmMapper.mapToFilmDto(film);
+        Film updatedLikesFilm = filmStorage.findFilmById(film.getId())
+                .orElseThrow(() -> new NotFoundException("Не найден фильм с ID:"));
+        log.info("Пользователь id={} поставил лайк фильму id={}", userId, updatedLikesFilm.getId());
+        return FilmMapper.mapToFilmDto(updatedLikesFilm);
     }
 
     @Override

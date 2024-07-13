@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,13 +27,14 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     private static final String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
     private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
 
-    public DataBaseUserStorage(JdbcTemplate jdbc, RowMapper<User> mapper, ResultSetExtractor<List<User>> extractor) {
-        super(jdbc, mapper, extractor);
+    public DataBaseUserStorage(JdbcTemplate jdbc, ResultSetExtractor<List<User>> listExtractor) {
+        super(listExtractor, jdbc);
     }
+
 
     @Override
     public Collection<User> getAllUsers() {
-        return findMany(FIND_ALL_QUERY);
+        return findManyExtractor(FIND_ALL_QUERY);
     }
 
     @Override
@@ -64,11 +64,11 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
 
     @Override
     public Optional<User> findUserById(Integer id) {
-        return findOne(FIND_BY_ID_QUERY, id);
+        return findOneExtractor(FIND_BY_ID_QUERY, id);
     }
 
     public Collection<User> getAllFriends(Integer id) {
-        return findMany(FIND_ALL_FRIENDS_QUERY, id);
+        return findManyExtractor(FIND_ALL_FRIENDS_QUERY, id);
     }
 
     public Optional<User> addFriend(Integer userId, Integer friendId) {
@@ -88,7 +88,7 @@ public class DataBaseUserStorage extends BaseStorage<User> implements UserStorag
     private boolean friendshipExists(Integer userId, Integer friendId) {
         String checkIfAlreadyFriend = "SELECT au.* FROM app_user au INNER JOIN friends f "
                 + "ON au.id = f.friend_id WHERE f.user_id = ? AND f.friend_id = ?";
-        Optional<User> friendOpt = findOne(checkIfAlreadyFriend, userId, friendId);
+        Optional<User> friendOpt = findOneExtractor(checkIfAlreadyFriend, userId, friendId);
 
         return friendOpt.isPresent();
     }

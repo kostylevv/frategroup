@@ -18,4 +18,6 @@ public interface FilmStorage {
     Film addLike(Film film, Integer userId);
 
     Film deleteLike(Film film, Integer userId);
+
+    Collection<Film> getPopularFilms(int count);
 }

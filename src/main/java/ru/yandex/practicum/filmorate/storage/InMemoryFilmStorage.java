@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static ru.yandex.practicum.filmorate.validators.FilmValidator.isFilmInfoValid;
 
@@ -73,6 +70,15 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film deleteLike(Film film, Integer userId) {
         film.deleteUserIdFromFilmLikes(userId);
         return film;
+    }
+
+    @Override
+    public Collection<Film> getPopularFilms(int count) {
+        List<Film> films = getAllFilms().stream()
+                .sorted(Comparator.comparingInt(film -> film.getLikes().size()))
+                .limit(count)
+                .toList();
+        return films.reversed();
     }
 
     private Integer getNextFilmId() {

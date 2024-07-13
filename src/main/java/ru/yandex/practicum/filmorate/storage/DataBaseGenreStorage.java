@@ -19,12 +19,12 @@ public class DataBaseGenreStorage extends BaseStorage<Genre> implements GenreSto
 
     @Override
     public Collection<Genre> getAllGenres() {
-        return findManyNoExtractor(FIND_ALL_QUERY);
+        return findManyMapper(FIND_ALL_QUERY);
     }
 
     @Override
     public Optional<Genre> findGenreById(Integer id) {
-        return findOne(FIND_BY_ID_QUERY, id);
+        return findOneMapper(FIND_BY_ID_QUERY, id);
 
     }
 }

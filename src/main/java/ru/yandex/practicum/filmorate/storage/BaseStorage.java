@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -15,19 +16,18 @@ import java.util.List;
 import java.util.Optional;
 
 public class BaseStorage<T> {
-    protected final JdbcTemplate jdbc;
-    protected final RowMapper<T> mapper;
-    protected ResultSetExtractor<List<T>> extractor;
-
-    public BaseStorage(JdbcTemplate jdbc, RowMapper<T> mapper, ResultSetExtractor<List<T>> extractor) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
-        this.extractor = extractor;
-    }
+    protected JdbcTemplate jdbc;
+    protected RowMapper<T> mapper;
+    protected ResultSetExtractor<List<T>> listExtractor;
 
     public BaseStorage(JdbcTemplate jdbc, RowMapper<T> mapper) {
         this.jdbc = jdbc;
         this.mapper = mapper;
+    }
+
+    public BaseStorage(ResultSetExtractor<List<T>> listExtractor, JdbcTemplate jdbc) {
+        this.listExtractor = listExtractor;
+        this.jdbc = jdbc;
     }
 
     protected Integer insert(String query, Object... params) {
@@ -51,15 +51,29 @@ public class BaseStorage<T> {
         }
     }
 
-    protected List<T> findMany(String query, Object... params) {
-        return jdbc.query(query, extractor, params);
+    protected List<T> findManyExtractor(String query, Object... params) {
+        return jdbc.query(query, listExtractor, params);
     }
 
-    protected List<T> findManyNoExtractor(String query, Object... params) {
+    protected List<T> findManyMapper(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
 
-    protected Optional<T> findOne(String query, Object... params) {
+    protected Optional<T> findOneExtractor(String query, Object... params) {
+        try {
+            List<T> results = jdbc.query(query, listExtractor, params);
+            assert results != null;
+            if (results.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(results.getFirst());
+            }
+        } catch (EmptyResultDataAccessException ignored) {
+            return Optional.empty();
+        }
+    }
+
+    protected Optional<T> findOneMapper(String query, Object... params) {
         try {
             T result = jdbc.queryForObject(query, mapper, params);
             return Optional.ofNullable(result);
@@ -67,6 +81,7 @@ public class BaseStorage<T> {
             return Optional.empty();
         }
     }
+
 
     protected void update(String query, Object... params) {
         int rowsUpdated = jdbc.update(query, params);
