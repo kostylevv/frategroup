@@ -66,7 +66,7 @@ class FilmDBTests {
     }
 
     @Test
-    void testCreateFilm(){
+    void testCreateFilm() {
         Mpa mpa = new Mpa();
         mpa.setId(1);
         Genre genre = new Genre();
