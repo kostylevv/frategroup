@@ -19,32 +19,32 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @JdbcTest
-    @AutoConfigureTestDatabase
-    @Sql(scripts = "/testdata.sql")
-    @RequiredArgsConstructor(onConstructor_ = @Autowired)
-    @ContextConfiguration(classes = {UserStorage.class, DataBaseUserStorage.class, UserResultSetExtractor.class,
-            UserListResultSetExtractor.class, UserService.class, FilmService.class, DataBaseGenreStorage.class,
-            FilmResultSetExtractor.class, FilmListResultSetExtractor.class, FilmServiceImpl.class, GenreRowMapper.class,
-            MpaRowMapper.class, FilmStorage.class, DataBaseFilmStorage.class, MpaStorage.class, MpaService.class,
-            MpaServiceImpl.class, DataBaseMpaStorage.class, MpaRowMapper.class})
-    class MpaDBTests {
-        private final DataBaseMpaStorage mpaStorage;
+@AutoConfigureTestDatabase
+@Sql(scripts = "/testdata.sql")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@ContextConfiguration(classes = {UserStorage.class, DataBaseUserStorage.class, UserResultSetExtractor.class,
+        UserListResultSetExtractor.class, UserService.class, FilmService.class, DataBaseGenreStorage.class,
+        FilmResultSetExtractor.class, FilmListResultSetExtractor.class, FilmServiceImpl.class, GenreRowMapper.class,
+        MpaRowMapper.class, FilmStorage.class, DataBaseFilmStorage.class, MpaStorage.class, MpaService.class,
+        MpaServiceImpl.class, DataBaseMpaStorage.class, MpaRowMapper.class})
+class MpaDBTests {
+    private final DataBaseMpaStorage mpaStorage;
 
-        @Test
-        void testGetAllMpa() {
-            Collection<Mpa> allMpa = mpaStorage.getAllMpa();
+    @Test
+    void testGetAllMpa() {
+        Collection<Mpa> allMpa = mpaStorage.getAllMpa();
 
-            Assertions.assertEquals(5, allMpa.size());
-        }
+        Assertions.assertEquals(5, allMpa.size());
+    }
 
-        @Test
+    @Test
     void testFindMpaById() {
-            Optional<Mpa> mpaOpt = mpaStorage.findMpaById(1);
+        Optional<Mpa> mpaOpt = mpaStorage.findMpaById(1);
 
-            assertThat(mpaOpt)
-                    .isPresent()
-                    .hasValueSatisfying(mpa ->
-                            assertThat(mpa).hasFieldOrPropertyWithValue("id", 1)
-                    );
-        }
+        assertThat(mpaOpt)
+                .isPresent()
+                .hasValueSatisfying(mpa ->
+                        assertThat(mpa).hasFieldOrPropertyWithValue("id", 1)
+                );
+    }
 }
