@@ -2,10 +2,17 @@ package ru.yandex.practicum.filmorate.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FilmMapper {
@@ -16,8 +23,21 @@ public final class FilmMapper {
         film.setDescription(request.getDescription());
         film.setReleaseDate(request.getReleaseDate());
         film.setDuration(request.getDuration());
-        film.setGenres(request.getGenres());
-        film.setMpa(request.getMpa());
+
+        if (request.getGenres() != null && !request.getGenres().isEmpty()) {
+            Set<Genre> genres = request.getGenres().stream()
+                    .map(GenreMapper::mapToGenre)
+                    .collect(Collectors.toSet());
+            film.setGenres(genres);
+        } else {
+            film.setGenres(new HashSet<>());
+        }
+
+        if (null != request.getMpa()) {
+            film.setMpa(MpaMapper.mapToMpa(request.getMpa()));
+        } else {
+            film.setMpa(new Mpa());
+        }
         return film;
     }
 
@@ -29,8 +49,11 @@ public final class FilmMapper {
         dto.setLikes(film.getLikes());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
-        dto.setGenres(film.getGenres());
-        dto.setMpa(film.getMpa());
+        Set<GenreDto> genresDto = film.getGenres().stream()
+                .map(GenreMapper::mapToGenreDto)
+                .collect(Collectors.toSet());
+        dto.setGenres(genresDto);
+        dto.setMpa(MpaMapper.mapToMpaDto(film.getMpa()));
         return dto;
     }
 

@@ -16,7 +16,7 @@ public class UpdateFilmRequest {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate releaseDate;
     @JsonSerialize(using = DurationSerializer.class)
-    Duration duration;
+    private Duration duration;
 
     public boolean hasName() {
         return ! (name == null || name.isBlank());

@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.serialization.DurationSerializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateSerializer;
 
@@ -23,6 +21,6 @@ public class FilmDto {
     private LocalDate releaseDate;
     @JsonSerialize(using = DurationSerializer.class)
     private Duration duration;
-    private Set<Genre> genres;
-    private Mpa mpa;
+    private Set<GenreDto> genres;
+    private MpaDto mpa;
 }

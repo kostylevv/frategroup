@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
-import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
+import ru.yandex.practicum.filmorate.dto.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.FilmMapper;
+import ru.yandex.practicum.filmorate.mappers.GenreMapper;
+import ru.yandex.practicum.filmorate.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -76,14 +76,15 @@ public class FilmServiceImpl implements FilmService {
         // маппинг
         FilmDto filmDto = FilmMapper.mapToFilmDto(film);
 
-        filmDto.setMpa(mpa);
+        filmDto.setMpa(MpaMapper.mapToMpaDto(mpa));
 
         if (request.getGenres() != null && !request.getGenres().isEmpty()) {
-            Set<Genre> genres = film.getGenres().stream()
+            Set<GenreDto> genres = film.getGenres().stream()
                     .map(Genre::getId)
                     .map(genreStorage::findGenreById)
                     .flatMap(Optional::stream)
-                    .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparingInt(Genre::getId))));
+                    .map(GenreMapper::mapToGenreDto)
+                    .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparingInt(GenreDto::getId))));
             filmDto.setGenres(genres);
         } else {
             filmDto.setGenres(new HashSet<>());

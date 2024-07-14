@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.serialization.DurationDeserializer;
 import ru.yandex.practicum.filmorate.serialization.LocalDateDeserializer;
 
@@ -19,6 +17,6 @@ public class NewFilmRequest {
     private LocalDate releaseDate;
     @JsonDeserialize(using = DurationDeserializer.class)
     private Duration duration;
-    private Set<Genre> genres;
-    private Mpa mpa;
+    private Set<GenreDto> genres;
+    private MpaDto mpa;
 }
