@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import static ru.yandex.practicum.filmorate.validators.FilmValidator.isFilmInfoValid;
 
 @Slf4j
@@ -23,16 +23,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        try {
-            if (isFilmInfoValid(film)) {
-                film.setId(getNextFilmId());
-                films.put(film.getId(), film);
-                log.info("Фильм создан: {}", film);
-            }
-        } catch (ValidationException e) {
-            log.warn("Ошибка валидации: {}", e.getMessage());
-            throw new ValidationException(e.getMessage());
-        }
+        film.setId(getNextFilmId());
+        films.put(film.getId(), film);
+        log.info("Фильм создан: {}", film);
         return film;
     }
 
@@ -61,11 +54,31 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(Integer id) {
+    public Optional<Film> findFilmById(Integer id) {
         return films.values().stream()
                 .filter(film -> film.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(String.format("Фильм с id = %d не найден", id)));
+                .findFirst();
+    }
+
+    @Override
+    public Film addLike(Film film, Integer userId) {
+        film.addUserIdToFilmLikes(userId);
+        return film;
+    }
+
+    @Override
+    public Film deleteLike(Film film, Integer userId) {
+        film.deleteUserIdFromFilmLikes(userId);
+        return film;
+    }
+
+    @Override
+    public Collection<Film> getPopularFilms(int count) {
+        List<Film> popularFilms = getAllFilms().stream()
+                .sorted(Comparator.comparingInt(film -> film.getLikes().size()))
+                .limit(count)
+                .toList();
+        return popularFilms.reversed();
     }
 
     private Integer getNextFilmId() {

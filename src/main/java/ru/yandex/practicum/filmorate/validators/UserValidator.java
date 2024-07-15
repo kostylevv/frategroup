@@ -6,6 +6,9 @@ import java.time.LocalDate;
 
 public class UserValidator {
 
+    private UserValidator() {
+    }
+
     public static boolean isUserInfoValid(User user) throws ValidationException {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("Некорректный адрес электронной почты.");

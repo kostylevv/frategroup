@@ -24,9 +24,9 @@ class FilmStorageTest {
     @Test
     void findAllFilms_shouldReturnAllFilms() {
         Film film1 = new Film(0, "Film1", "Description1", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         Film film2 = new Film(0, "Film2", "Description2", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         filmStorage.createFilm(film1);
         filmStorage.createFilm(film2);
 
@@ -38,7 +38,7 @@ class FilmStorageTest {
     @Test
     void createFilm_shouldAddNewFilm() {
         Film film = new Film(0, "Film", "Description", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
 
         Film createdFilm = filmStorage.createFilm(film);
 
@@ -49,11 +49,11 @@ class FilmStorageTest {
     @Test
     void createFilm_shouldSetIdInOrder() {
         Film film1 = new Film(0, "Film1", "Description1", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         Film film2 = new Film(0, "Film2", "Description2", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         Film film3 = new Film(0, "Film3", "Description3", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
 
         Film createdFilm1 = filmStorage.createFilm(film1);
         Film createdFilm2 = filmStorage.createFilm(film2);
@@ -67,10 +67,10 @@ class FilmStorageTest {
 
     @Test
     void updateFilm_shouldUpdateFilmWhenAllFieldsAreCorrect() {
-        Film film = new Film(1, "Film", "Description", null,
-                LocalDate.of(2000, 1, 1), 100);
+        Film film = new Film(1, "Film", "Description",
+                LocalDate.of(2000, 1, 1), 444);
         filmStorage.createFilm(film);
-        Film updatedFilm = new Film(1, "FilmUpdated", "DescriptionUpdated", null,
+        Film updatedFilm = new Film(1, "FilmUpdated", "DescriptionUpdated",
                 LocalDate.of(2005, 5, 5), 50);
 
         filmStorage.updateFilm(updatedFilm);
@@ -86,10 +86,10 @@ class FilmStorageTest {
     @Test
     void updateFilm_shouldThrowValidationExceptionWhenIdIsNull() {
         Film film = new Film(1, "Film", "Description", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         filmStorage.createFilm(film);
         Film updatedFilm = new Film(null, "FilmUpdated", "DescriptionUpdated", null,
-                LocalDate.of(2005, 5, 5), 50);
+                LocalDate.of(2005, 5, 5), null);
 
         Assertions.assertThrows(ValidationException.class, () -> filmStorage.updateFilm(updatedFilm));
     }
@@ -97,10 +97,10 @@ class FilmStorageTest {
     @Test
     void updateFilm_shouldThrowNotFoundExceptionWhenIdNonExistent() {
         Film film = new Film(1, "Film", "Description", null,
-                LocalDate.of(2000, 1, 1), 100);
+                LocalDate.of(2000, 1, 1), null);
         filmStorage.createFilm(film);
         Film updatedFilm = new Film(7, "FilmUpdated", "DescriptionUpdated", null,
-                LocalDate.of(2005, 5, 5), 50);
+                LocalDate.of(2005, 5, 5), null);
 
         Assertions.assertThrows(NotFoundException.class, () -> filmStorage.updateFilm(updatedFilm));
     }

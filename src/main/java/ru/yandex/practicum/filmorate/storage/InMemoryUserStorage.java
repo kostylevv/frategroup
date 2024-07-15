@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import static ru.yandex.practicum.filmorate.validators.UserValidator.isUserInfoValid;
 
 @Component
@@ -70,11 +70,25 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(Integer id) {
+    public Optional<User> findUserById(Integer id) {
         return users.values().stream()
                 .filter(user -> user.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", id)));
+                .findFirst();
+    }
+
+    @Override
+    public Collection<User> getAllFriends(Integer id) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<User> addFriend(Integer userId, Integer friendId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> deleteFriend(Integer userId, Integer friendId) {
+        return Optional.empty();
     }
 
     private boolean isEmailDuplicated(String newEmail) {

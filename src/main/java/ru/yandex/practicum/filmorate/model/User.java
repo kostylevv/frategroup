@@ -23,13 +23,16 @@ public class User {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
 
-    public User(Integer id, String email, String login, String name, Set<Integer> friends, LocalDate birthday) {
+    public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
         this.name = name;
         this.friends = new HashSet<>();
         this.birthday = birthday;
+    }
+
+    public User() {
     }
 
     public void addUserIdToFriendsList(Integer id) {
