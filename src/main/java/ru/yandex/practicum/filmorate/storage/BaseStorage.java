@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -27,6 +26,12 @@ public class BaseStorage<T> {
     public BaseStorage(ResultSetExtractor<List<T>> listExtractor, JdbcTemplate jdbc) {
         this.listExtractor = listExtractor;
         this.jdbc = jdbc;
+    }
+
+    public BaseStorage(JdbcTemplate jdbc, RowMapper<T> mapper, ResultSetExtractor<List<T>> listExtractor) {
+        this.jdbc = jdbc;
+        this.mapper = mapper;
+        this.listExtractor = listExtractor;
     }
 
     protected Integer insert(String query, Object... params) {

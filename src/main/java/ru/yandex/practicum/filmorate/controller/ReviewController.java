@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -16,51 +16,51 @@ import java.util.List;
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
-    private ReviewService service;
+    private final ReviewService reviewService;
 
     @PostMapping
-    public ReviewDto createReview(@RequestBody NewReviewRequest request) {
-        return service.createReview(request);
+    public ReviewDto createReview(@Valid @RequestBody NewReviewRequest request) {
+        return reviewService.createReview(request);
     }
 
     @PutMapping
-    public ReviewDto updateReview(@RequestBody UpdatedReviewRequest request) {
-        return service.updateReview(request);
+    public ReviewDto updateReview(@Valid @RequestBody UpdatedReviewRequest request) {
+        return reviewService.updateReview(request);
     }
 
     @GetMapping
     public List<ReviewDto> getReviewsForFilm(@RequestParam(required = true) int filmId) {
-        return service.getReviewsByFilmId(filmId);
+        return reviewService.getReviewsByFilmId(filmId);
     }
 
     @GetMapping("/{id}")
     public ReviewDto getReview(@PathVariable int id) {
-        return service.getReviewById(id);
+        return reviewService.getReviewById(id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable int id) {
-        service.deleteReview(id);
+        reviewService.deleteReview(id);
     }
 
     @PutMapping("/{reviewId}/like/{userId}")
     public void addLike(@PathVariable("reviewId") int reviewId, @PathVariable int userId) {
-        service.addLikeToReview(reviewId, userId);
+        reviewService.addLikeToReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/like/{userId}")
     public void removeLike(@PathVariable("reviewId") int reviewId, @PathVariable int userId) {
-        service.removeLikeFromReview(reviewId, userId);
+        reviewService.removeLikeFromReview(reviewId, userId);
     }
 
     @PutMapping("/{reviewId}/dislike/{userId}")
     public void addDislike(@PathVariable("reviewId") int reviewId, @PathVariable int userId) {
-        service.addDislikeToReview(reviewId, userId);
+        reviewService.addDislikeToReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/dislike/{userId}")
     public void removeDislike(@PathVariable("reviewId") int reviewId, @PathVariable int userId) {
-        service.removeDislikeFromReview(reviewId, userId);
+        reviewService.removeDislikeFromReview(reviewId, userId);
     }
 
 }
