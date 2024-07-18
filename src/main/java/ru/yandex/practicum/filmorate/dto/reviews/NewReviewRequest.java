@@ -7,9 +7,11 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 public class NewReviewRequest {
-    private int userId;
+    @NotNull
+    private Integer userId;
 
-    private int filmId;
+    @NotNull
+    private Integer filmId;
 
     @NotBlank
     @Size(max = 255, message
@@ -17,5 +19,5 @@ public class NewReviewRequest {
     private String content;
 
     @NotNull
-    private boolean isPositive;
+    private Boolean isPositive;
 }

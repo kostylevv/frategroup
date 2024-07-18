@@ -57,8 +57,8 @@ public class ReviewServiceImpl implements ReviewService {
                 new NotFoundException("Couldn't update review to unexisting film with id = " + request.getFilmId()));
         User user = userStorage.findUserById(request.getUserId()).orElseThrow(() ->
                 new NotFoundException("Couldn't update review from unexisting user with id = " + request.getUserId()));
-        Review review = reviewStorage.getReviewById(request.getId()).orElseThrow(() ->
-                new NotFoundException("Couldn't update unexisting review with id = " + request.getId()));
+        Review review = reviewStorage.getReviewById(request.getReviewId()).orElseThrow(() ->
+                new NotFoundException("Couldn't update unexisting review with id = " + request.getReviewId()));
         return ReviewMapper.mapToDto(reviewStorage.updateReview(ReviewMapper.mapToReview(request)));
     }
 

@@ -1,18 +1,22 @@
 package ru.yandex.practicum.filmorate.dto.reviews;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 @Data
 @Validated
 public class UpdatedReviewRequest {
-    private int id;
+    @NotNull
+    private Integer reviewId;
 
-    private int userId;
+    @NotNull
+    private Integer userId;
 
-    @PositiveOrZero
-    private int filmId;
+    @NotNull
+    private Integer filmId;
 
     @NotBlank
     @Size(max = 255, message
@@ -20,5 +24,5 @@ public class UpdatedReviewRequest {
     private String content;
 
     @NotNull
-    boolean isPositive;
+    Boolean isPositive;
 }

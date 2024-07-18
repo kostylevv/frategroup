@@ -21,16 +21,16 @@ public class ReviewMapper {
                 .userId(request.getUserId())
                 .filmId(request.getFilmId())
                 .content(request.getContent())
-                .isPositive(request.isPositive()).build();
+                .isPositive(request.getIsPositive()).build();
     }
 
     public static Review mapToReview(UpdatedReviewRequest request) {
         return Review.builder()
-                .id(request.getId())
+                .id(request.getReviewId())
                 .userId(request.getUserId())
                 .filmId(request.getFilmId())
                 .content(request.getContent())
-                .isPositive(request.isPositive()).build();
+                .isPositive(request.getIsPositive()).build();
     }
 
 }
