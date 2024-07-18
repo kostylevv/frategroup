@@ -8,12 +8,18 @@ import java.util.List;
 
 public interface ReviewService {
     ReviewDto getReviewById(int id);
+
     List<ReviewDto> getReviewsByFilmId(int id);
+
     ReviewDto createReview(NewReviewRequest request);
+
     ReviewDto updateReview(UpdatedReviewRequest request);
-    void addLikeToReview(int reviewId, int userId);
-    void removeLikeFromReview(int reviewId, int userId);
-    void addDislikeToReview(int reviewId, int userId);
-    void removeDislikeFromReview(int reviewId, int userId);
+
     void deleteReview(int id);
+
+    void addLikeToReview(int userId, int reviewId);
+
+    void addDislikeToReview(int userId, int reviewId);
+
+    void removeLikeDislikeFromReview(int userId, int reviewId);
 }

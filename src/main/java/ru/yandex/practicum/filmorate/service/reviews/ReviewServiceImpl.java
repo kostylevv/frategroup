@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.reviews.NewReviewRequest;
 import ru.yandex.practicum.filmorate.dto.reviews.ReviewDto;
 import ru.yandex.practicum.filmorate.dto.reviews.UpdatedReviewRequest;
-import ru.yandex.practicum.filmorate.exceptions.ErrorResponse;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mappers.ReviewMapper;
@@ -63,29 +62,37 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void addLikeToReview(int reviewId, int userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void removeLikeFromReview(int reviewId, int userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void addDislikeToReview(int reviewId, int userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void removeDislikeFromReview(int reviewId, int userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void deleteReview(int id) {
         Review review = reviewStorage.getReviewById(id).orElseThrow(() ->
                 new ValidationException("Couldn't delete unexisting review with id = " + id));
         reviewStorage.deleteReview(id);
     }
+
+    @Override
+    public void addLikeToReview(int userId, int reviewId) {
+        User user = userStorage.findUserById(userId).orElseThrow(() ->
+                new NotFoundException("Couldn't add like to review from unexisting user with id = " + userId));
+        Review review = reviewStorage.getReviewById(reviewId).orElseThrow(() ->
+                new NotFoundException("Couldn't add like unexisting review with id = " + reviewId));
+        reviewStorage.addLikeToReview(userId, reviewId);
+    }
+
+    @Override
+    public void addDislikeToReview(int userId, int reviewId) {
+        User user = userStorage.findUserById(userId).orElseThrow(() ->
+                new NotFoundException("Couldn't add dislike to review from unexisting user with id = " + userId));
+        Review review = reviewStorage.getReviewById(reviewId).orElseThrow(() ->
+                new NotFoundException("Couldn't add dislike unexisting review with id = " + reviewId));
+        reviewStorage.addDislikeToReview(userId, reviewId);
+    }
+
+    @Override
+    public void removeLikeDislikeFromReview(int userId, int reviewId) {
+        User user = userStorage.findUserById(userId).orElseThrow(() ->
+                new NotFoundException("Couldn't remove like/dislike to review from unexisting user with id = " + userId));
+        Review review = reviewStorage.getReviewById(reviewId).orElseThrow(() ->
+                new NotFoundException("Couldn't remove like/dislike unexisting review with id = " + reviewId));
+        reviewStorage.removeLikeDislikeFromReview(userId, reviewId);
+    }
+
 }
